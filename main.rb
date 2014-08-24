@@ -1,28 +1,28 @@
 class Parser
-  attr_accessor :line_number, :php_lines, :zep_lines
+  attr_accessor :zep
 
   def initialize
-    self.zep_lines = []
-    self.line_number = 0
+    self.zep = []
   end
 end
 
 p = Parser.new
 
 File.readlines('HStoreParser.php').map do |line|
-  
-  p.zep_lines << "}" if line.split("\n").include?("}")
-  p.zep_lines << "{" if line.split("\n").include?("{")
-  p.zep_lines << "" if line == "<?php\n"
-  if line.split(" ").include?("class")
-    p.zep_lines << "class"
+  ls = line.split(" ") 
+  p.zep << "}" if line.split("\n").include?("}")
+  p.zep << "{" if line.split("\n").include?("{")
+  p.zep << "" if line == "<?php\n"
+
+  if ls.include?("class")
+    p.zep << "class #{ls[1]}"
   end
 
-  if line == "private function charAfterSpaces($str, &$p)\n"
-    p.zep_lines << "private function charAfterSpaces(const string! str) -> char|boolean"
+  if ls.include?("function")
+    p.zep << "class #{ls[1]}"
   end
 
   #p.line_number += 1
 end
 
-abort p.zep_lines.inspect
+abort p.zep.inspect
