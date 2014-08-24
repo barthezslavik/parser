@@ -11,6 +11,7 @@ p = Parser.new
 File.readlines('HStoreParser.php').map do |line|
   ls = line.split(" ")
   lsn = line.split("\n")
+
   p.zep << "}" if lsn.include?("}")
   p.zep << "{" if lsn.include?("{")
 
@@ -19,10 +20,11 @@ File.readlines('HStoreParser.php').map do |line|
   end
 
   if ls.include?("function")
-    p.zep << "class #{ls[1]}"
+    name = ls[2].split("(")[0]
+    p.zep << "#{ls[0]} #{ls[1]} #{name}"
   end
-
-  #p.line_number += 1
 end
 
-abort p.zep.inspect
+p.zep.each do |l|
+  puts l
+end
