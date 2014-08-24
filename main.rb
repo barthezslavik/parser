@@ -41,6 +41,12 @@ File.readlines('HStoreParser.php').map do |line|
   end
 end
 
+indent = 0
+
 p.zep.each do |l|
-  puts l
+  tab = ""
+  indent.times{ tab += "  "}
+  puts "#{tab}#{l}"
+  indent += 1 if l == "{"
+  indent -= 1 if l == "}"
 end
