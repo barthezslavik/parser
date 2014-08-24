@@ -9,10 +9,10 @@ end
 p = Parser.new
 
 File.readlines('HStoreParser.php').map do |line|
-  ls = line.split(" ") 
-  p.zep << "}" if line.split("\n").include?("}")
-  p.zep << "{" if line.split("\n").include?("{")
-  p.zep << "" if line == "<?php\n"
+  ls = line.split(" ")
+  lsn = line.split("\n")
+  p.zep << "}" if lsn.include?("}")
+  p.zep << "{" if lsn.include?("{")
 
   if ls.include?("class")
     p.zep << "class #{ls[1]}"
