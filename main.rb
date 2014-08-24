@@ -14,6 +14,10 @@ File.readlines('HStoreParser.php').map do |line|
   p.zep << "}" if ls.include?("}")
   p.zep << "{" if ls.include?("{")
 
+  if ls.include?("namespace")
+    p.zep << "namespace #{ls[1]}"
+  end
+
   if ls.include?("class")
     p.zep << "class #{ls[1]}"
   end
