@@ -1,52 +1,63 @@
-class Parser
-  attr_accessor :zep
-
-  def initialize
-    self.zep = []
-  end
-end
-
-p = Parser.new
+zep = []
+open = []
+close = []
+space = []
+indent = 0
 
 File.readlines('HStoreParser.php').map do |line|
   ls = line.split(" ")
 
-  p.zep << "}" if ls.include?("}")
-  p.zep << "{" if ls.include?("{")
+=begin
+  zep << "}" if ls.include?("}")
+  zep << "{" if ls.include?("{")
 
   if ls.include?("namespace")
     name = ls[1].split("\\").last
-    p.zep << "namespace #{name}"
+    zep << "namespace #{name}"
   end
 
   if ls.include?("class")
-    p.zep << "class #{ls[1]}"
+    zep << "class #{ls[1]}"
   end
 
   if ls.include?("function")
     name = ls[2].split("(")[0]
-    p.zep << "#{ls[0]} #{ls[1]} #{name}()"
+    zep << "#{ls[0]} #{ls[1]} #{name}()"
   end
 
   if ls.include?("return")
-    p.zep << "return #{ls[1]} #{ls[2]} #{ls[3]}"
+    zep << "return #{ls[1]} #{ls[2]} #{ls[3]}"
   end
 
   if ls.include?("(")
-    p.zep << "(#{ls[1]});"
+    zep << "(#{ls[1]});"
   end
 
   if ls.include?("if")
-    p.zep << "if#{ls[1]} #{ls[2]} #{ls[3]}"
+    zep << "if#{ls[1]} #{ls[2]} #{ls[3]}"
   end
+=end
+  zep << "#{ls[0]} #{ls[1]} #{ls[2]} #{ls[3]} #{ls[4]} #{ls[5]}"
 end
 
-indent = 0
+zep.each_with_index do |z,i|
+  space << 0
+  open << i if z == "{"
+  close << i if z == "}"
+end
 
-p.zep.each do |l|
-  tab = ""
-  indent.times{ tab += "  "}
-  puts "#{tab}#{l}"
-  indent += 1 if l == "{"
-  indent -= 1 if l == "}"
+space.each_with_index do |s,i|
+  indent += 1 if open.include?(i)
+  indent -= 1 if close.include?(i)
+  space[i] = indent
+end
+
+puts open.inspect
+puts close.inspect
+puts space.inspect
+
+zep.each_with_index do |z,i|
+  s = ""
+  space[i].times { s += " " }
+  puts "#{s} #{zep[i]}"
 end
