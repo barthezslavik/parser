@@ -21,16 +21,17 @@ File.readlines('mini.php').map do |line|
   end
 
   if ls.include?("function")
-    f = {}
-    f[:type] = ls[0] if ls[0] =~ /public|private/
+    type = ls[0] if ls[0] =~ /public|private/
     if ls[1] =~ /function/
       args = line.split("(")[1].split(")")[0].split(",").map(&:strip)
-      f[:priv] = args.select{ |e| e =~ /&/ }
-      f[:args] = args.reject{ |e| e =~ /&|\n/ }
-      f[:name] = ls[2].split("(")[0]
+      priv = args.select{ |e| e =~ /&/ }
+      args = args.reject{ |e| e =~ /&|\n/ }
+      name = ls[2].split("(")[0]
+      var = args[0].gsub("$","")
+      params = "const string! #{var}"
+      ret = "-> char|boolean"
     end
-    abort f.inspect
-    zep << "#{ls[0]} #{ls[1]} #{name}()"
+    zep << "#{type} function #{name}(#{params}) #{ret}"
   end
 
   #if ls.include?("return")

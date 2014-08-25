@@ -6,7 +6,7 @@ use Intaro\HStoreBundle\HStore\Exception\ConversionException;
 
 class HStoreParser
 {
-    private function charAfterSpaces($str, $adas, $dasd, $fsdf, &$p)
+    private function charAfterSpaces($str, &$p)
     {
         $p += strspn($str, " \t\r\n", $p);
 
