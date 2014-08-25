@@ -1,13 +1,13 @@
 zep = []
+php = []
 open = []
 close = []
 space = []
 indent = 0
 
-File.readlines('HStoreParser.php').map do |line|
+File.readlines('mini.php').map do |line|
   ls = line.split(" ")
 
-=begin
   zep << "}" if ls.include?("}")
   zep << "{" if ls.include?("{")
 
@@ -21,43 +21,32 @@ File.readlines('HStoreParser.php').map do |line|
   end
 
   if ls.include?("function")
-    name = ls[2].split("(")[0]
+    f = {}
+    f[:type] = ls[0] if ls[0] =~ /public|private/
+    if ls[1] =~ /function/
+      args = line.split("(")[1].split(")")[0].split(",").map(&:strip)
+      f[:priv] = args.select{ |e| e =~ /&/ }
+      f[:args] = args.reject{ |e| e =~ /&|\n/ }
+      f[:name] = ls[2].split("(")[0]
+    end
+    abort f.inspect
     zep << "#{ls[0]} #{ls[1]} #{name}()"
   end
 
-  if ls.include?("return")
-    zep << "return #{ls[1]} #{ls[2]} #{ls[3]}"
-  end
+  #if ls.include?("return")
+  #  zep << "return #{ls[1]} #{ls[2]} #{ls[3]}"
+  #end
 
-  if ls.include?("(")
-    zep << "(#{ls[1]});"
-  end
+  #if ls.include?("(")
+  #  zep << "(#{ls[1]});"
+  #end
 
-  if ls.include?("if")
-    zep << "if#{ls[1]} #{ls[2]} #{ls[3]}"
-  end
-=end
-  zep << "#{ls[0]} #{ls[1]} #{ls[2]} #{ls[3]} #{ls[4]} #{ls[5]}"
+  #if ls.include?("if")
+  #  zep << "if#{ls[1]} #{ls[2]} #{ls[3]}"
+  #end
+
 end
 
 zep.each_with_index do |z,i|
-  space << 0
-  open << i if z == "{"
-  close << i if z == "}"
-end
-
-space.each_with_index do |s,i|
-  indent += 1 if open.include?(i)
-  indent -= 1 if close.include?(i)
-  space[i] = indent
-end
-
-puts open.inspect
-puts close.inspect
-puts space.inspect
-
-zep.each_with_index do |z,i|
-  s = ""
-  space[i].times { s += " " }
-  puts "#{s} #{zep[i]}"
+  puts zep[i]
 end
