@@ -24,7 +24,7 @@ File.readlines('mini.php').map do |line|
     type = ls[0] if ls[0] =~ /public|private/
     if ls[1] =~ /function/
       args = line.split("(")[1].split(")")[0].split(",").map(&:strip)
-      priv = args.select{ |e| e =~ /&/ }
+      @priv = args.select{ |e| e =~ /&/ }
       args = args.reject{ |e| e =~ /&|\n/ }
       name = ls[2].split("(")[0]
       var = args[0].gsub("$","")
@@ -33,6 +33,11 @@ File.readlines('mini.php').map do |line|
     end
     zep << "#{type} function #{name}(#{params}) #{ret}"
   end
+
+  if ls.include?("+=")
+    abort @priv.inspect
+  end
+
 
   #if ls.include?("return")
   #  zep << "return #{ls[1]} #{ls[2]} #{ls[3]}"
